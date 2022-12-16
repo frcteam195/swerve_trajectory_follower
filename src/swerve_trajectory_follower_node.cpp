@@ -5,7 +5,17 @@
 #include <string>
 #include <mutex>
 
+#include "ck_utilities/todd_trajectory/swerve_trajectory_smoother.hpp"
+#include "ck_utilities/Units.hpp"
+
 ros::NodeHandle* node;
+
+using SwerveTrajectory::BasicTrajectory;
+using SwerveTrajectory::BasicTrajectoryPoint;
+using SwerveTrajectory::DetailedTrajectory;
+using SwerveTrajectory::DetailedTrajectoryPoint;
+using SwerveTrajectory::SwerveTrajectorySmoother;
+using SwerveTrajectory::SwerveTrajectorySmootherConfiguration;
 
 int main(int argc, char **argv)
 {
@@ -20,6 +30,31 @@ int main(int argc, char **argv)
 	 * part of the ROS system.
 	 */
 	ros::init(argc, argv, "swerve_trajectory_follower_node");
+	std::cout << "Starting" << std::endl;
+
+	BasicTrajectory test_trajectory;
+
+	BasicTrajectoryPoint first_point;
+	test_trajectory.points.push_back(first_point);
+
+	BasicTrajectoryPoint second_point;
+	second_point.pose.position.x(10.0);
+	second_point.speed = 1;
+	test_trajectory.points.push_back(second_point);
+
+	SwerveTrajectorySmootherConfiguration config;
+	config.heading_turn_rate_by_speed.insert(1, ck::math::deg2rad(2));
+	config.track_acceleration_by_speed.insert(1, 1);
+	config.track_deceleration_by_speed.insert(1, 1);
+	config.track_turn_rate_by_speed.insert(1, ck::math::deg2rad(1));
+	config.time_step_seconds = 0.01;
+
+	SwerveTrajectorySmoother smoother(config);
+	std::cout << "About to smooth" << std::endl;
+
+	DetailedTrajectory result = smoother.smooth_path(test_trajectory);
+
+	std::cout << "I survived." << std::endl;
 
 	ros::NodeHandle n;
 

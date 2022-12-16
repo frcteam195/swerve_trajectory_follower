@@ -1,0 +1,2 @@
+geometry_msgs/Pose Pose
+float64 speed_meters_per_sec
