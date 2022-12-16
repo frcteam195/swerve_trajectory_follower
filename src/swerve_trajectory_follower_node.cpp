@@ -1,11 +1,13 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "geometry_msgs/PoseArray.h"
 
 #include <thread>
 #include <string>
 #include <mutex>
 
 #include "ck_utilities/todd_trajectory/swerve_trajectory_smoother.hpp"
+#include "ck_utilities/geometry/geometry_ros_helpers.hpp"
 #include "ck_utilities/Units.hpp"
 
 ros::NodeHandle* node;
@@ -43,6 +45,12 @@ int main(int argc, char **argv)
 	second_point.speed = 1;
 	test_trajectory.points.push_back(second_point);
 
+	BasicTrajectoryPoint third_point;
+	third_point.pose.position.x(10.0);
+	third_point.pose.position.y(10.0);
+	third_point.speed = 1;
+	test_trajectory.points.push_back(third_point);
+
 	SwerveTrajectorySmootherConfiguration config;
 	config.heading_turn_rate_by_speed.insert(1, ck::math::deg2rad(2));
 	config.track_acceleration_by_speed.insert(1, 1);
@@ -60,7 +68,33 @@ int main(int argc, char **argv)
 	ros::NodeHandle n;
 
 	node = &n;
+	static ros::Publisher base_plan_publisher = node->advertise<geometry_msgs::PoseArray>("/InputPlan", 1);
+	static ros::Publisher detailed_plan_publisher = node->advertise<geometry_msgs::PoseArray>("/DetailedPlan", 1);
 
-	ros::spin();
+	ros::Rate rate_limit(10);
+
+	geometry_msgs::PoseArray base_plan;
+	base_plan.header.frame_id = "map";
+	geometry_msgs::PoseArray detailed_plan;
+	detailed_plan.header.frame_id = "map";
+
+	for (auto & base_point : test_trajectory.points)
+	{
+		base_plan.poses.push_back(geometry::to_msg(base_point.pose));
+	}
+
+	for (auto & detailed_point : result.points)
+	{
+		detailed_plan.poses.push_back(geometry::to_msg(detailed_point.pose));
+	}
+
+	while(!ros::isShuttingDown())
+	{
+		base_plan_publisher.publish(base_plan);
+		detailed_plan_publisher.publish(detailed_plan);
+		ros::spinOnce();
+		rate_limit.sleep();
+	}
+
 	return 0;
 }
