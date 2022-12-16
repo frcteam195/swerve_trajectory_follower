@@ -35,6 +35,7 @@ int main(int argc, char **argv)
 	BasicTrajectory test_trajectory;
 
 	BasicTrajectoryPoint first_point;
+	first_point.speed = 0;
 	test_trajectory.points.push_back(first_point);
 
 	BasicTrajectoryPoint second_point;
