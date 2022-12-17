@@ -57,17 +57,17 @@ int main(int argc, char **argv)
 	fourth_point.speed = 1;
 	test_trajectory.points.push_back(fourth_point);
 
-	// BasicTrajectoryPoint fifth_point;
-	// fifth_point.pose.position.x(-20.0);
-	// fifth_point.pose.position.y(-20.0);
-	// fifth_point.speed = 1;
-	// test_trajectory.points.push_back(fifth_point);
+	BasicTrajectoryPoint fifth_point;
+	fifth_point.pose.position.x(-20.0);
+	fifth_point.pose.position.y(-20.0);
+	fifth_point.speed = 1;
+	test_trajectory.points.push_back(fifth_point);
 
-	// BasicTrajectoryPoint sixth_point;
-	// sixth_point.pose.position.x(0.0);
-	// sixth_point.pose.position.y(0.0);
-	// sixth_point.speed = 1;
-	// test_trajectory.points.push_back(sixth_point);
+	BasicTrajectoryPoint sixth_point;
+	sixth_point.pose.position.x(0.0);
+	sixth_point.pose.position.y(0.0);
+	sixth_point.speed = 1;
+	test_trajectory.points.push_back(sixth_point);
 
 	SwerveTrajectorySmootherConfiguration config;
 	config.heading_turn_rate_by_speed.insert(1, ck::math::deg2rad(2));
