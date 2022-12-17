@@ -55,8 +55,8 @@ int main(int argc, char **argv)
 	config.heading_turn_rate_by_speed.insert(1, ck::math::deg2rad(2));
 	config.track_acceleration_by_speed.insert(1, 1);
 	config.track_deceleration_by_speed.insert(1, 1);
-	config.track_turn_rate_by_speed.insert(1, ck::math::deg2rad(1));
-	config.time_step_seconds = 0.01;
+	config.track_turn_rate_by_speed.insert(1, ck::math::deg2rad(0.001));
+	config.time_step_seconds = 0.1;
 
 	SwerveTrajectorySmoother smoother(config);
 	std::cout << "About to smooth" << std::endl;
